@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة العملاء - الكهربائي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #19171b;
+            --red-primary: #75020f;
+            --red-dark: #51080d;
+            --red-darker: #2b0307;
+            --light-text: #f0f2f7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--red-darker) 100%);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(25, 23, 27, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(240, 242, 247, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(240, 242, 247, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .owner-name {
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            color: var(--light-text);
+        }
+
+        .header .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-container {
+            padding: 20px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(240, 242, 247, 0.1);
+            color: var(--light-text);
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(240, 242, 247, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(240, 242, 247, 0.15);
+            border-color: var(--red-primary);
+            box-shadow: 0 0 20px rgba(117, 2, 15, 0.3);
+        }
+
+        .search-box::placeholder {
+            color: rgba(240, 242, 247, 0.6);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--red-primary);
+            font-size: 1.2rem;
+        }
+
+        .form-section {
+            padding: 0 20px 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(240, 242, 247, 0.08);
+            color: var(--light-text);
+            font-size: 1rem;
+            border: 1px solid rgba(240, 242, 247, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            background: rgba(240, 242, 247, 0.12);
+            border-color: var(--red-primary);
+            box-shadow: 0 0 15px rgba(117, 2, 15, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .input-group::placeholder {
+            color: rgba(240, 242, 247, 0.6);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+            color: var(--light-text);
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(240, 242, 247, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .add-btn:hover::before {
+            left: 100%;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(117, 2, 15, 0.4);
+        }
+
+        .add-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .clients-section {
+            padding: 0 20px 20px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--red-primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red-primary), transparent);
+            border-radius: 2px;
+        }
+
+        .client-card {
+            background: rgba(240, 242, 247, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(240, 242, 247, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .client-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--red-primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .client-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .client-card:hover {
+            transform: translateX(-5px);
+            background: rgba(240, 242, 247, 0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .client-card.paid {
+            background: rgba(117, 2, 15, 0.1);
+            border-color: var(--red-primary);
+        }
+
+        .client-card.paid .client-name {
+            color: var(--red-primary);
+        }
+
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .client-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .paid-icon {
+            color: var(--red-primary);
+            font-size: 1.3rem;
+            animation: checkmark 0.5s ease-in-out;
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background: rgba(240, 242, 247, 0.2);
+            color: var(--light-text);
+        }
+
+        .edit-btn:hover {
+            background: rgba(240, 242, 247, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: rgba(117, 2, 15, 0.8);
+            color: var(--light-text);
+        }
+
+        .delete-btn:hover {
+            background: var(--red-primary);
+            transform: translateY(-2px);
+        }
+
+        .toggle-paid-btn {
+            background: var(--red-dark);
+            color: var(--light-text);
+        }
+
+        .toggle-paid-btn:hover {
+            background: var(--red-primary);
+            transform: translateY(-2px);
+        }
+
+        .client-info {
+            display: grid;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(240, 242, 247, 0.1);
+        }
+
+        .info-label {
+            color: rgba(240, 242, 247, 0.8);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--light-text);
+            font-weight: bold;
+        }
+
+        .remaining-amount {
+            color: var(--red-primary);
+            font-weight: bold;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+            color: var(--light-text);
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+            color: var(--light-text);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(117, 2, 15, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(117, 2, 15, 0.6);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--red-darker) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(240, 242, 247, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(240, 242, 247, 0.1);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--red-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--light-text);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(240, 242, 247, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .edit-options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            padding: 15px 20px;
+            background: rgba(240, 242, 247, 0.05);
+            border: 1px solid rgba(240, 242, 247, 0.1);
+            border-radius: 12px;
+            color: var(--light-text);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+        }
+
+        .option-btn:hover {
+            background: rgba(117, 2, 15, 0.2);
+            border-color: var(--red-primary);
+            transform: translateX(-5px);
+        }
+
+        .option-btn.active {
+            background: var(--red-primary);
+            border-color: var(--red-primary);
+        }
+
+        .edit-form {
+            display: none;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .edit-form .form-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .current-info {
+            background: rgba(240, 242, 247, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(240, 242, 247, 0.1);
+        }
+
+        .current-info h4 {
+            color: var(--red-primary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .current-info p {
+            color: var(--light-text);
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+            color: var(--light-text);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(117, 2, 15, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(240, 242, 247, 0.6);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 5px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="owner-name">محمود حمادة</div>
+            <h1>⚡ إدارة العملاء</h1>
+            <div class="subtitle">نظام متطور لإدارة عملاء الكهرباء</div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 البحث عن عميل...">
+            <div class="search-icon">🔍</div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-grid">
+                <div class="input-group">
+                    <input type="text" id="clientName" placeholder="👤 اسم العميل" required>
+                </div>
+                <div class="input-group">
+                    <input type="tel" id="clientPhone" placeholder="📱 رقم الهاتف" required>
+                </div>
+                <div class="input-group">
+                    <textarea id="clientOrders" placeholder="📋 تفاصيل الطلبات"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <input type="number" id="ordersCost" placeholder="💰 حساب الطلبات" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="laborCost" placeholder="🔧 حساب الصنعة" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <input type="number" id="paidAmount" placeholder="💳 المبلغ المدفوع" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="remainingAmount" placeholder="💸 المتبقي" step="0.01" readonly>
+                    </div>
+                </div>
+            </div>
+            <button class="add-btn" onclick="addClient()">➕ إضافة عميل جديد</button>
+        </div>
+
+        <div class="clients-section">
+            <h2 class="section-title">📋 قائمة العملاء</h2>
+            <div id="clientsList"></div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <button id="scrollToTop" class="scroll-to-top">⬆️</button>
+
+    <!-- نافذة التعديل -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">تعديل بيانات العميل</h3>
+                <button class="close-btn" onclick="closeEditModal()">✕</button>
+            </div>
+
+            <div class="current-info" id="currentClientInfo">
+                <!-- سيتم ملء البيانات الحالية هنا -->
+            </div>
+
+            <div class="edit-options">
+                <button class="option-btn" onclick="showEditForm('orders')">
+                    📋 إضافة أو تعديل طلب
+                </button>
+                <button class="option-btn" onclick="showEditForm('labor')">
+                    🔧 إضافة أو تعديل مصنعية
+                </button>
+                <button class="option-btn" onclick="showEditForm('payment')">
+                    💰 إضافة دفعة جديدة
+                </button>
+                <button class="option-btn" onclick="showEditForm('info')">
+                    👤 تعديل معلومات العميل
+                </button>
+            </div>
+
+            <!-- نموذج إضافة طلب -->
+            <div id="ordersForm" class="edit-form">
+                <h4 style="color: var(--red-primary); margin-bottom: 15px;">📋 إضافة طلب جديد</h4>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <textarea id="newOrder" placeholder="تفاصيل الطلب الجديد"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="newOrderCost" placeholder="تكلفة الطلب" step="0.01">
+                    </div>
+                </div>
+                <button class="save-btn" onclick="addOrder()">إضافة الطلب</button>
+            </div>
+
+            <!-- نموذج إضافة مصنعية -->
+            <div id="laborForm" class="edit-form">
+                <h4 style="color: var(--red-primary); margin-bottom: 15px;">🔧 إضافة مصنعية</h4>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <textarea id="newLaborDescription" placeholder="وصف العمل"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="newLaborCost" placeholder="تكلفة المصنعية" step="0.01">
+                    </div>
+                </div>
+                <button class="save-btn" onclick="addLabor()">إضافة المصنعية</button>
+            </div>
+
+            <!-- نموذج إضافة دفعة -->
+            <div id="paymentForm" class="edit-form">
+                <h4 style="color: var(--red-primary); margin-bottom: 15px;">💰 إضافة دفعة جديدة</h4>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <input type="number" id="newPayment" placeholder="المبلغ المدفوع" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="paymentNote" placeholder="ملاحظة (اختياري)">
+                    </div>
+                </div>
+                <button class="save-btn" onclick="addPayment()">إضافة الدفعة</button>
+            </div>
+
+            <!-- نموذج تعديل المعلومات -->
+            <div id="infoForm" class="edit-form">
+                <h4 style="color: var(--red-primary); margin-bottom: 15px;">👤 تعديل معلومات العميل</h4>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <input type="text" id="editName" placeholder="اسم العميل">
+                    </div>
+                    <div class="input-group">
+                        <input type="tel" id="editPhone" placeholder="رقم الهاتف">
+                    </div>
+                </div>
+                <button class="save-btn" onclick="updateClientInfo()">حفظ التعديلات</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clients = JSON.parse(localStorage.getItem('clients')) || [];
+        let editingIndex = -1;
+        let currentEditingClient = -1;
+
+        // حساب المبلغ المتبقي تلقائياً
+        function calculateRemaining() {
+            const ordersCost = parseFloat(document.getElementById('ordersCost').value) || 0;
+            const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+            const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+            const total = ordersCost + laborCost;
+            const remaining = Math.max(0, total - paidAmount);
+            document.getElementById('remainingAmount').value = remaining.toFixed(2);
+        }
+
+        // ربط الأحداث لحساب المبلغ المتبقي
+        document.getElementById('ordersCost').addEventListener('input', calculateRemaining);
+        document.getElementById('laborCost').addEventListener('input', calculateRemaining);
+        document.getElementById('paidAmount').addEventListener('input', calculateRemaining);
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function addClient() {
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const orders = document.getElementById('clientOrders').value.trim();
+            const ordersCost = parseFloat(document.getElementById('ordersCost').value) || 0;
+            const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+            const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+            const remainingAmount = parseFloat(document.getElementById('remainingAmount').value) || 0;
+
+            if (!name || !phone) {
+                showNotification('⚠️ يرجى إدخال اسم العميل ورقم الهاتف');
+                return;
+            }
+
+            const client = {
+                name,
+                phone,
+                orders,
+                ordersCost,
+                laborCost,
+                paidAmount,
+                remainingAmount,
+                isPaid: remainingAmount === 0,
+                date: new Date().toLocaleString('ar-EG')
+            };
+
+            if (editingIndex >= 0) {
+                clients[editingIndex] = client;
+                editingIndex = -1;
+                showNotification('✅ تم تحديث بيانات العميل بنجاح');
+            } else {
+                clients.push(client);
+                showNotification('✅ تم إضافة العميل بنجاح');
+            }
+
+            localStorage.setItem('clients', JSON.stringify(clients));
+            clearForm();
+            displayClients();
+        }
+
+        function clearForm() {
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientOrders').value = '';
+            document.getElementById('ordersCost').value = '';
+            document.getElementById('laborCost').value = '';
+            document.getElementById('paidAmount').value = '';
+            document.getElementById('remainingAmount').value = '';
+            editingIndex = -1;
+            document.querySelector('.add-btn').textContent = '➕ إضافة عميل جديد';
+        }
+
+        function editClient(index) {
+            currentEditingClient = index;
+            const client = clients[index];
+            
+            // عرض البيانات الحالية
+            document.getElementById('currentClientInfo').innerHTML = `
+                <h4>📋 البيانات الحالية:</h4>
+                <p><strong>الاسم:</strong> ${client.name}</p>
+                <p><strong>الهاتف:</strong> ${client.phone}</p>
+                <p><strong>الطلبات:</strong> ${client.orders || 'لا توجد طلبات'}</p>
+                <p><strong>تكلفة الطلبات:</strong> ${client.ordersCost.toFixed(2)} جنيه</p>
+                <p><strong>تكلفة المصنعية:</strong> ${client.laborCost.toFixed(2)} جنيه</p>
+                <p><strong>المدفوع:</strong> ${client.paidAmount.toFixed(2)} جنيه</p>
+                <p><strong>المتبقي:</strong> ${client.remainingAmount.toFixed(2)} جنيه</p>
+            `;
+            
+            // فتح النافذة المنبثقة
+            document.getElementById('editModal').classList.add('show');
+            
+            showNotification('📝 نافذة التعديل مفتوحة');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            hideAllEditForms();
+            currentEditingClient = -1;
+        }
+
+        function showEditForm(formType) {
+            hideAllEditForms();
+            document.getElementById(formType + 'Form').classList.add('active');
+            
+            // ملء البيانات إذا كان تعديل معلومات
+            if (formType === 'info' && currentEditingClient >= 0) {
+                const client = clients[currentEditingClient];
+                document.getElementById('editName').value = client.name;
+                document.getElementById('editPhone').value = client.phone;
+            }
+        }
+
+        function hideAllEditForms() {
+            const forms = document.querySelectorAll('.edit-form');
+            forms.forEach(form => form.classList.remove('active'));
+        }
+
+        function addOrder() {
+            if (currentEditingClient < 0) return;
+            
+            const orderDescription = document.getElementById('newOrder').value.trim();
+            const orderCost = parseFloat(document.getElementById('newOrderCost').value) || 0;
+            
+            if (!orderDescription || orderCost <= 0) {
+                showNotification('⚠️ يرجى إدخال تفاصيل الطلب والتكلفة');
+                return;
+            }
+            
+            const client = clients[currentEditingClient];
+            
+            // إضافة الطلب الجديد
+            client.orders = client.orders ? client.orders + '\n• ' + orderDescription : '• ' + orderDescription;
+            client.ordersCost += orderCost;
+            
+            // إعادة حساب المتبقي
+            const total = client.ordersCost + client.laborCost;
+            client.remainingAmount = Math.max(0, total - client.paidAmount);
+            client.isPaid = client.remainingAmount === 0;
+            
+            // حفظ التحديثات
+            localStorage.setItem('clients', JSON.stringify(clients));
+            displayClients();
+            updateCurrentClientInfo();
+            
+            // مسح النموذج
+            document.getElementById('newOrder').value = '';
+            document.getElementById('newOrderCost').value = '';
+            
+            showNotification('✅ تم إضافة الطلب بنجاح');
+        }
+
+        function addLabor() {
+            if (currentEditingClient < 0) return;
+            
+            const laborDescription = document.getElementById('newLaborDescription').value.trim();
+            const laborCost = parseFloat(document.getElementById('newLaborCost').value) || 0;
+            
+            if (!laborDescription || laborCost <= 0) {
+                showNotification('⚠️ يرجى إدخال وصف العمل والتكلفة');
+                return;
+            }
+            
+            const client = clients[currentEditingClient];
+            
+            // إضافة المصنعية الجديدة
+            client.laborDescription = client.laborDescription ? client.laborDescription + '\n• ' + laborDescription : '• ' + laborDescription;
+            client.laborCost += laborCost;
+            
+            // إعادة حساب المتبقي
+            const total = client.ordersCost + client.laborCost;
+            client.remainingAmount = Math.max(0, total - client.paidAmount);
+            client.isPaid = client.remainingAmount === 0;
+            
+            // حفظ التحديثات
+            localStorage.setItem('clients', JSON.stringify(clients));
+            displayClients();
+            updateCurrentClientInfo();
+            
+            // مسح النموذج
+            document.getElementById('newLaborDescription').value = '';
+            document.getElementById('newLaborCost').value = '';
+            
+            showNotification('✅ تم إضافة المصنعية بنجاح');
+        }
+
+        function addPayment() {
+            if (currentEditingClient < 0) return;
+            
+            const paymentAmount = parseFloat(document.getElementById('newPayment').value) || 0;
+            const paymentNote = document.getElementById('paymentNote').value.trim();
+            
+            if (paymentAmount <= 0) {
+                showNotification('⚠️ يرجى إدخال مبلغ صحيح');
+                return;
+            }
+            
+            const client = clients[currentEditingClient];
+            
+            // إضافة الدفعة
+            client.paidAmount += paymentAmount;
+            
+            // إضافة ملاحظة الدفعة إذا وجدت
+            if (paymentNote) {
+                client.paymentNotes = client.paymentNotes ? 
+                    client.paymentNotes + '\n• ' + paymentNote + ' (' + paymentAmount + ' جنيه)' : 
+                    '• ' + paymentNote + ' (' + paymentAmount + ' جنيه)';
+            }
+            
+            // إعادة حساب المتبقي
+            const total = client.ordersCost + client.laborCost;
+            client.remainingAmount = Math.max(0, total - client.paidAmount);
+            client.isPaid = client.remainingAmount === 0;
+            
+            // حفظ التحديثات
+            localStorage.setItem('clients', JSON.stringify(clients));
+            displayClients();
+            updateCurrentClientInfo();
+            
+            // مسح النموذج
+            document.getElementById('newPayment').value = '';
+            document.getElementById('paymentNote').value = '';
+            
+            showNotification('✅ تم إضافة الدفعة بنجاح');
+        }
+
+        function updateClientInfo() {
+            if (currentEditingClient < 0) return;
+            
+            const newName = document.getElementById('editName').value.trim();
+            const newPhone = document.getElementById('editPhone').value.trim();
+            
+            if (!newName || !newPhone) {
+                showNotification('⚠️ يرجى إدخال الاسم ورقم الهاتف');
+                return;
+            }
+            
+            const client = clients[currentEditingClient];
+            client.name = newName;
+            client.phone = newPhone;
+            
+            // حفظ التحديثات
+            localStorage.setItem('clients', JSON.stringify(clients));
+            displayClients();
+            updateCurrentClientInfo();
+            
+            showNotification('✅ تم تحديث معلومات العميل بنجاح');
+        }
+
+        function updateCurrentClientInfo() {
+            if (currentEditingClient >= 0) {
+                const client = clients[currentEditingClient];
+                document.getElementById('currentClientInfo').innerHTML = `
+                    <h4>📋 البيانات المحدثة:</h4>
+                    <p><strong>الاسم:</strong> ${client.name}</p>
+                    <p><strong>الهاتف:</strong> ${client.phone}</p>
+                    <p><strong>الطلبات:</strong> ${client.orders || 'لا توجد طلبات'}</p>
+                    <p><strong>تكلفة الطلبات:</strong> ${client.ordersCost.toFixed(2)} جنيه</p>
+                    <p><strong>تكلفة المصنعية:</strong> ${client.laborCost.toFixed(2)} جنيه</p>
+                    <p><strong>المدفوع:</strong> ${client.paidAmount.toFixed(2)} جنيه</p>
+                    <p><strong>المتبقي:</strong> ${client.remainingAmount.toFixed(2)} جنيه</p>
+                `;
+            }
+        }
+
+        function deleteClient(index) {
+            if (confirm('هل أنت متأكد من حذف هذا العميل؟')) {
+                clients.splice(index, 1);
+                localStorage.setItem('clients', JSON.stringify(clients));
+                displayClients();
+                showNotification('🗑️ تم حذف العميل بنجاح');
+            }
+        }
+
+        function togglePaidStatus(index) {
+            clients[index].isPaid = !clients[index].isPaid;
+            if (clients[index].isPaid) {
+                clients[index].remainingAmount = 0;
+                clients[index].paidAmount = clients[index].ordersCost + clients[index].laborCost;
+                showNotification('💰 تم تسديد المبلغ كاملاً');
+            } else {
+                const total = clients[index].ordersCost + clients[index].laborCost;
+                clients[index].remainingAmount = Math.max(0, total - clients[index].paidAmount);
+                showNotification('💸 تم تحديث حالة الدفع');
+            }
+            localStorage.setItem('clients', JSON.stringify(clients));
+            displayClients();
+        }
+
+        function displayClients(filteredClients = null) {
+            const clientsList = document.getElementById('clientsList');
+            const clientsToShow = filteredClients || clients;
+
+            if (clientsToShow.length === 0) {
+                clientsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">👥</div>
+                        <div>لا توجد عملاء حالياً</div>
+                        <div style="font-size: 0.8rem; margin-top: 10px;">قم بإضافة عميل جديد لبدء الاستخدام</div>
+                    </div>
+                `;
+                return;
+            }
+
+            clientsList.innerHTML = clientsToShow.map((client, index) => {
+                const originalIndex = filteredClients ? clients.indexOf(client) : index;
+                return `
+                    <div class="client-card ${client.isPaid ? 'paid' : ''}">
+                        <div class="client-header">
+                            <div class="client-name">
+                                ${client.name}
+                                ${client.isPaid ? '<span class="paid-icon">✅</span>' : ''}
+                            </div>
+                            <div class="card-actions">
+                                <button class="action-btn edit-btn" onclick="editClient(${originalIndex})">✏️</button>
+                                <button class="action-btn delete-btn" onclick="deleteClient(${originalIndex})">🗑️</button>
+                                <button class="action-btn toggle-paid-btn" onclick="togglePaidStatus(${originalIndex})">
+                                    ${client.isPaid ? '↩️' : '✅'}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="client-info">
+                            <div class="info-row">
+                                <span class="info-label">📱 الهاتف:</span>
+                                <span class="info-value">${client.phone}</span>
+                            </div>
+                            ${client.orders ? `
+                                <div class="info-row">
+                                    <span class="info-label">📋 الطلبات:</span>
+                                    <span class="info-value">${client.orders}</span>
+                                </div>
+                            ` : ''}
+                            <div class="info-row">
+                                <span class="info-label">💰 حساب الطلبات:</span>
+                                <span class="info-value">${client.ordersCost.toFixed(2)} جنيه</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">🔧 حساب الصنعة:</span>
+                                <span class="info-value">${client.laborCost.toFixed(2)} جنيه</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">💳 المدفوع:</span>
+                                <span class="info-value">${client.paidAmount.toFixed(2)} جنيه</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">💸 المتبقي:</span>
+                                <span class="info-value remaining-amount">${client.remainingAmount.toFixed(2)} جنيه</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">📅 التاريخ:</span>
+                                <span class="info-value">${client.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // البحث
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            if (searchTerm === '') {
+                displayClients();
+            } else {
+                const filteredClients = clients.filter(client => 
+                    client.name.toLowerCase().includes(searchTerm) ||
+                    client.phone.includes(searchTerm)
+                );
+                displayClients(filteredClients);
+            }
+        });
+
+        // تحميل البيانات عند بدء التشغيل
+        displayClients();
+
+        // زر التمرير إلى الأعلى
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // إغلاق النافذة المنبثقة عند النقر خارجها
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
+
+        // إعادة تعيين نص الزر عند النقر خارج النموذج
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.form-section')) {
+                if (editingIndex >= 0) {
+                    editingIndex = -1;
+                    document.querySelector('.add-btn').textContent = '➕ إضافة عميل جديد';
+                    clearForm();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
