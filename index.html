@@ -681,6 +681,7 @@
                 </div>
             </div>
             <button class="add-btn" onclick="addClient()">➕ إضافة عميل جديد</button>
+<button id="installBtn" style="display:none;">تثبيت التطبيق<button>
         </div>
 
         <div class="clients-section">
@@ -1195,6 +1196,18 @@
                 }
             }
         });
-    </script>
+   
+  let deferredPrompt;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.querySelector("#installBtn").style.display = "block";
+  });
+
+  document.querySelector("#installBtn").addEventListener('click', () => {
+    deferredPrompt.prompt();
+  });
+</script>
 </body>
 </html>
