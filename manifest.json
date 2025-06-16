@@ -1,0 +1,15 @@
+{
+  "name": "اElectic-app",
+  "short_name": "M-H",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#75020f",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ]
+}
