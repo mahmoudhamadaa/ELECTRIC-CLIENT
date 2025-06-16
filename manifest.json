@@ -1,7 +1,7 @@
 {
-  "name": "اElectic-app",
+  "name": "Electric-app",
   "short_name": "M-H",
-  "start_url": "/",
+  "start_url": "/ELECTRIC-CLIENT/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#75020f",
